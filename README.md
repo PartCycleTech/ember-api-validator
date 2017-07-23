@@ -1,26 +1,41 @@
 # api-validator
 
-This README outlines the details of collaborating on this Ember addon.
+Ember addon for testing against [partcycle-api-fixtures](https://github.com/PartCycleTech/partcycle-api-fixtures)
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* `cd api-validator`
+* Add `"api-validator": "PartCycleTech/ember-api-validator` to your package.json:
 * `npm install`
 
-## Running
+## Usage
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+1. Instatiate:
 
-## Running Tests
+```
+let validator = new ApiValidator({ fixture }); // initialize with your JSON fixture
+```
 
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+2. Verify request
 
-## Building
+```
+let myFlexParamsArray = ['path.to.flex.param'];
 
-* `ember build`
+validator.verifyRequest({
+  requestBody: myRequestBody,
+  flexParams: myFlexParamsArray
+  callback: ({ expectedBody }) => {
+    // compare myRequestBody to expectedBody here
+    // good place to make test assertions
+  }
+});
+```
 
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+3. Build response status and response body
+
+```
+let flexParamsHash = {'path.to.flex.param': 'value to substitute'};
+
+let responseStatus = validator.buildResponseStatus();
+let responseBody = alidator.buildResponseBody({ flexParams: myFlexParamsHash });
+// now you can return this response to your application, as if it had come from an API endpoint
+```
