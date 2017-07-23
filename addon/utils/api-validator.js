@@ -1,6 +1,3 @@
-/* globals require */
-
-import config from 'ember-get-config';
 import _ from 'lodash';
 
 function isValidId(value) {
@@ -38,17 +35,11 @@ function buildResponse({ flexParams, callback } = {}) {
   callback({ response, status });
 }
 
-function ApiValidator({ fixturePath, fixture }) {
+function ApiValidator({ fixture }) {
   if (fixture) {
     this.spec = fixture;
-  } else if (fixturePath) {
-    if (!config || !config.apiValidator || !config.apiValidator.fixtureHome) {
-      throw new Error('ApiValidator: must specify fixtureHome in your config');
-    }
-    let { fixtureHome } = config.apiValidator;
-    this.spec = require(`${fixtureHome}/${fixturePath}`).default;
   } else {
-    throw new Error('ApiValidator: must pass in fixturePath or fixture');
+    throw new Error('ApiValidator: must pass in fixture');
   }
   this.verifyRequest = verifyRequest;
   this.buildResponse = buildResponse;
