@@ -4,12 +4,12 @@ Ember addon for testing against [partcycle-api-fixtures](https://github.com/Part
 
 ## Installation
 
-* Add `"api-validator": "PartCycleTech/ember-api-validator` to your package.json:
+* Add `"api-validator": "PartCycleTech/ember-api-validator"` to your package.json
 * `npm install`
 
 ## Usage
 
-1. Instatiate:
+1. Instatiate
 
 ```javascript
 import { ApiValidator } from 'api-validator/utils/api-validator';
