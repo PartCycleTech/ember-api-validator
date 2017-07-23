@@ -11,13 +11,15 @@ Ember addon for testing against [partcycle-api-fixtures](https://github.com/Part
 
 1. Instatiate:
 
-```
+```javascript
+import { ApiValidator } from 'api-validator/utils/api-validator';
+
 let validator = new ApiValidator({ fixture }); // initialize with your JSON fixture
 ```
 
 2. Verify request
 
-```
+```javascript
 let myFlexParamsArray = ['path.to.flex.param'];
 
 validator.verifyRequest({
@@ -32,10 +34,11 @@ validator.verifyRequest({
 
 3. Build response status and response body
 
-```
+```javascript
 let flexParamsHash = {'path.to.flex.param': 'value to substitute'};
 
 let responseStatus = validator.buildResponseStatus();
 let responseBody = alidator.buildResponseBody({ flexParams: myFlexParamsHash });
+
 // now you can return this response to your application, as if it had come from an API endpoint
 ```
