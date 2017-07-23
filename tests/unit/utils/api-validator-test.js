@@ -31,16 +31,12 @@ test('with simple fixture', function(assert) {
     }
   });
 
-  validator.buildResponse({
-    callback: ({ response, status }) => {
-      assert.equal(status, '200', 'buildResponse sends correct status to callback');
-      assert.deepEqual(
-        response,
-        { "hello": "world" },
-        'buildResponse sends correct response to callback'
-      );
-    }
-  });
+  assert.equal(validator.buildResponseStatus(), '200', 'buildResponseStatus returns correct value');
+  assert.deepEqual(
+    validator.buildResponseBody(),
+    { "hello": "world" },
+    'buildResponseBody returns correct value'
+  );
 });
 
 test('with flex params in fixture and valid substitutions', function(assert) {
@@ -80,17 +76,12 @@ test('with flex params in fixture and valid substitutions', function(assert) {
     }
   });
 
-  validator.buildResponse({
-    flexParams: { "hello.world": "952" },
-    callback: ({ response, status }) => {
-      assert.equal(status, '404', 'buildResponse sends correct status to callback');
-      assert.deepEqual(
-        response,
-        { "hello": { "world": "952" } },
-        'buildResponse sends correct response to callback'
-      );
-    }
-  });
+  assert.equal(validator.buildResponseStatus(), '404', 'buildResponseStatus returns correct value');
+  assert.deepEqual(
+    validator.buildResponseBody({ flexParams: { "hello.world": "952" } }),
+    { "hello": { "world": "952" } },
+    'buildResponseBody returns correct value'
+  );
 });
 
 test('with flex params in fixture but invalid substitutions', function(assert) {
@@ -130,15 +121,10 @@ test('with flex params in fixture but invalid substitutions', function(assert) {
     }
   });
 
-  validator.buildResponse({
-    flexParams: { "hello.world": "" },
-    callback: ({ response, status }) => {
-      assert.equal(status, '500', 'buildResponse sends correct status to callback');
-      assert.deepEqual(
-        response,
-        fixture.response.body,
-        'buildResponse sends correct response to callback'
-      );
-    }
-  });
+  assert.equal(validator.buildResponseStatus(), '500', 'buildResponseStatus returns correct value');
+  assert.deepEqual(
+    validator.buildResponseBody({ flexParams: { "hello.world": "" } }),
+    fixture.response.body,
+    'buildResponseBody returns correct value'
+  );
 });

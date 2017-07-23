@@ -19,10 +19,9 @@ function verifyRequest({ requestBody, flexParams, callback } = {}) {
   callback({ expectedBody });
 }
 
-function buildResponse({ flexParams, callback } = {}) {
+function buildResponseBody({ flexParams } = {}) {
   flexParams = flexParams || {};
   let response = _.cloneDeep(this.spec.response.body);
-  let status = this.spec.response.status;
   _.keys(flexParams).forEach((path) => {
     let responseValue = _.get(response, path);
     let customValue = flexParams[path];
@@ -32,7 +31,11 @@ function buildResponse({ flexParams, callback } = {}) {
       }
     }
   });
-  callback({ response, status });
+  return response;
+}
+
+function buildResponseStatus() {
+  return this.spec.response.status;
 }
 
 function ApiValidator({ fixture }) {
@@ -42,7 +45,8 @@ function ApiValidator({ fixture }) {
     throw new Error('ApiValidator: must pass in fixture');
   }
   this.verifyRequest = verifyRequest;
-  this.buildResponse = buildResponse;
+  this.buildResponseBody = buildResponseBody;
+  this.buildResponseStatus = buildResponseStatus;
 }
 
 export { ApiValidator };
