@@ -128,3 +128,77 @@ test('with flex params in fixture but invalid substitutions', function(assert) {
     'buildResponseBody returns correct value'
   );
 });
+
+test('with links', function(assert) {
+  let fixture = {
+    "request": {
+      "body": {
+        "fred": {
+          "flintstone": "foo"
+        }
+      }
+    },
+    "response": {
+      "body": {
+        "data": {
+          "id": "3",
+          "type": "orders",
+          "links": {
+            "self": "http://www.example.com/api/orders/123"
+          },
+          "relationships": {
+            "credit-card": {
+              "links": {
+                "self": "http://www.example.com/api/orders/123/relationships/credit-card",
+                "related": "http://www.example.com/api/orders/123/credit-card"
+              }
+            }
+          }
+        },
+        "included": [
+          {
+            "id": "9",
+            "type": "credit-cards",
+            "links": {
+              "self": "http://www.example.com/api/credit-cards/9"
+            },
+            "relationships": {
+              "credit-card": {
+                "links": {
+                  "self": "http://www.example.com/api/orders/123/relationships/credit-card",
+                  "related": "http://www.example.com/api/orders/123/credit-card"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "status": "200"
+    }
+  };
+  let expectedBody = {
+    "data": {
+      "id": "3",
+      "type": "orders",
+      "relationships": {
+        "credit-card": {}
+      }
+    },
+    "included": [
+      {
+        "id": "9",
+        "type": "credit-cards",
+        "relationships": {
+          "credit-card": {}
+        }
+      }
+    ]
+  }
+  let validator = new ApiValidator({ fixture });
+
+  assert.deepEqual(
+    validator.buildResponseBody({ flexParams: { "hello.world": "" } }),
+    expectedBody,
+    'buildResponseBody returns correct value'
+  );
+});

@@ -4,6 +4,30 @@ function isValidId(value) {
   return !_.isEmpty(value);
 }
 
+function removeLinksFromRelationships(record) {
+  let relationships = _.get(record, "relationships") || {};
+  _.keys(relationships).forEach((key) => {
+    if (relationships[key]["links"]) {
+      delete relationships[key]["links"];
+    }
+  });
+}
+
+function removeLinks(response) {
+  if (_.get(response, "data.links")) {
+    delete _.get(response, "data")["links"];
+  }
+  removeLinksFromRelationships(response["data"]);
+
+  let included_arr = _.get(response, "included") || [];
+  included_arr.forEach((included_record) => {
+    if (included_record["links"]) {
+      delete included_record["links"];
+    }
+    removeLinksFromRelationships(included_record);
+  });
+}
+
 function verifyRequest({ requestBody, flexParams, callback } = {}) {
   flexParams = flexParams || [];
   let expectedBody = _.cloneDeep(this.spec.request.body);
@@ -31,6 +55,7 @@ function buildResponseBody({ flexParams } = {}) {
       }
     }
   });
+  removeLinks(response);
   return response;
 }
 
