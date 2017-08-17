@@ -4,18 +4,18 @@ import { module, test } from 'qunit';
 module('Unit | Utility | api validator');
 
 test('with simple fixture', function(assert) {
-  let requestBody = { "fred": "flintstone" };
+  let requestBody = { 'fred': 'flintstone' };
   let fixture = {
-    "request": {
-      "body": {
-        "fred": "flintstone"
+    'request': {
+      'body': {
+        'fred': 'flintstone'
       }
     },
-    "response": {
-      "body": {
-        "hello": "world"
+    'response': {
+      'body': {
+        'hello': 'world'
       },
-      "status": "200"
+      'status': '200'
     }
   };
   let validator = new ApiValidator({ fixture });
@@ -33,32 +33,32 @@ test('with simple fixture', function(assert) {
   assert.equal(validator.buildResponseStatus(), '200', 'buildResponseStatus returns correct value');
   assert.deepEqual(
     validator.buildResponseBody(),
-    { "hello": "world" },
+    { 'hello': 'world' },
     'buildResponseBody returns correct value'
   );
 });
 
 test('with flex params in fixture and valid substitutions', function(assert) {
   let requestBody = {
-    "fred": {
-      "flintstone": "11"
+    'fred': {
+      'flintstone': '11'
     }
   };
   let fixture = {
-    "request": {
-      "body": {
-        "fred": {
-          "flintstone": "id#flintstone-id"
+    'request': {
+      'body': {
+        'fred': {
+          'flintstone': 'id#flintstone-id'
         }
       }
     },
-    "response": {
-      "body": {
-        "hello": {
-          "world": "id#world_param"
+    'response': {
+      'body': {
+        'hello': {
+          'world': 'id#world_param'
         }
       },
-      "status": "404"
+      'status': '404'
     }
   };
   let validator = new ApiValidator({ fixture });
@@ -77,27 +77,27 @@ test('with flex params in fixture and valid substitutions', function(assert) {
   assert.equal(validator.buildResponseStatus(), '404', 'buildResponseStatus returns correct value');
   assert.deepEqual(
     validator.buildResponseBody({ flexParams: { 'world_param': '952' } }),
-    { "hello": { "world": "952" } },
+    { 'hello': { 'world': '952' } },
     'buildResponseBody returns correct value'
   );
 });
 
 test('with flex params in fixture but invalid substitutions', function(assert) {
   let fixture = {
-    "request": {
-      "body": {
-        "fred": {
-          "flintstone": "id#flintstone-id"
+    'request': {
+      'body': {
+        'fred': {
+          'flintstone': 'id#flintstone-id'
         }
       }
     },
-    "response": {
-      "body": {
-        "hello": {
-          "world": "id#world-id"
+    'response': {
+      'body': {
+        'hello': {
+          'world': 'id#world-id'
         }
       },
-      "status": "500"
+      'status': '500'
     }
   };
   let validator = new ApiValidator({ fixture });
@@ -115,7 +115,7 @@ test('with flex params in fixture but invalid substitutions', function(assert) {
 
   assert.equal(validator.buildResponseStatus(), '500', 'buildResponseStatus returns correct value');
   assert.deepEqual(
-    validator.buildResponseBody({ flexParams: { "world-id": "" } }),
+    validator.buildResponseBody({ flexParams: { 'world-id': '' } }),
     fixture.response.body,
     'buildResponseBody returns correct value'
   );
@@ -123,65 +123,65 @@ test('with flex params in fixture but invalid substitutions', function(assert) {
 
 test('with links', function(assert) {
   let fixture = {
-    "request": {
-      "body": {
-        "fred": {
-          "flintstone": "foo"
+    'request': {
+      'body': {
+        'fred': {
+          'flintstone': 'foo'
         }
       }
     },
-    "response": {
-      "body": {
-        "data": {
-          "id": "3",
-          "type": "orders",
-          "links": {
-            "self": "http://www.example.com/api/orders/123"
+    'response': {
+      'body': {
+        'data': {
+          'id': '3',
+          'type': 'orders',
+          'links': {
+            'self': 'http://www.example.com/api/orders/123'
           },
-          "relationships": {
-            "credit-card": {
-              "links": {
-                "self": "http://www.example.com/api/orders/123/relationships/credit-card",
-                "related": "http://www.example.com/api/orders/123/credit-card"
+          'relationships': {
+            'credit-card': {
+              'links': {
+                'self': 'http://www.example.com/api/orders/123/relationships/credit-card',
+                'related': 'http://www.example.com/api/orders/123/credit-card'
               }
             }
           }
         },
-        "included": [
+        'included': [
           {
-            "id": "9",
-            "type": "credit-cards",
-            "links": {
-              "self": "http://www.example.com/api/credit-cards/9"
+            'id': '9',
+            'type': 'credit-cards',
+            'links': {
+              'self': 'http://www.example.com/api/credit-cards/9'
             },
-            "relationships": {
-              "credit-card": {
-                "links": {
-                  "self": "http://www.example.com/api/orders/123/relationships/credit-card",
-                  "related": "http://www.example.com/api/orders/123/credit-card"
+            'relationships': {
+              'credit-card': {
+                'links': {
+                  'self': 'http://www.example.com/api/orders/123/relationships/credit-card',
+                  'related': 'http://www.example.com/api/orders/123/credit-card'
                 }
               }
             }
           }
         ]
       },
-      "status": "200"
+      'status': '200'
     }
   };
   let expectedBody = {
-    "data": {
-      "id": "3",
-      "type": "orders",
-      "relationships": {
-        "credit-card": {}
+    'data': {
+      'id': '3',
+      'type': 'orders',
+      'relationships': {
+        'credit-card': {}
       }
     },
-    "included": [
+    'included': [
       {
-        "id": "9",
-        "type": "credit-cards",
-        "relationships": {
-          "credit-card": {}
+        'id': '9',
+        'type': 'credit-cards',
+        'relationships': {
+          'credit-card': {}
         }
       }
     ]
