@@ -189,7 +189,7 @@ test('with links', function(assert) {
   let validator = new ApiValidator({ fixture });
 
   assert.deepEqual(
-    validator.buildResponseBody({ flexParams: {} }),
+    validator.buildResponseBody(),
     expectedBody,
     'buildResponseBody returns correct value'
   );
