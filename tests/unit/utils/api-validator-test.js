@@ -21,7 +21,6 @@ test('with simple fixture', function(assert) {
   let validator = new ApiValidator({ fixture });
 
   validator.verifyRequest({
-    requestBody,
     callback: ({ expectedBody }) => {
       assert.deepEqual(
         expectedBody,
@@ -49,14 +48,14 @@ test('with flex params in fixture and valid substitutions', function(assert) {
     "request": {
       "body": {
         "fred": {
-          "flintstone": "@id"
+          "flintstone": "id#flintstone-id"
         }
       }
     },
     "response": {
       "body": {
         "hello": {
-          "world": "@id"
+          "world": "id#world_param"
         }
       },
       "status": "404"
@@ -65,8 +64,7 @@ test('with flex params in fixture and valid substitutions', function(assert) {
   let validator = new ApiValidator({ fixture });
 
   validator.verifyRequest({
-    requestBody,
-    flexParams: ['fred.flintstone'],
+    flexParams: {'flintstone-id': '11'},
     callback: ({ expectedBody }) => {
       assert.deepEqual(
         expectedBody,
@@ -78,30 +76,25 @@ test('with flex params in fixture and valid substitutions', function(assert) {
 
   assert.equal(validator.buildResponseStatus(), '404', 'buildResponseStatus returns correct value');
   assert.deepEqual(
-    validator.buildResponseBody({ flexParams: { "hello.world": "952" } }),
+    validator.buildResponseBody({ flexParams: { 'world_param': '952' } }),
     { "hello": { "world": "952" } },
     'buildResponseBody returns correct value'
   );
 });
 
 test('with flex params in fixture but invalid substitutions', function(assert) {
-  let requestBody = {
-    "fred": {
-      "flintstone": ""
-    }
-  };
   let fixture = {
     "request": {
       "body": {
         "fred": {
-          "flintstone": "@id"
+          "flintstone": "id#flintstone-id"
         }
       }
     },
     "response": {
       "body": {
         "hello": {
-          "world": "@id"
+          "world": "id#world-id"
         }
       },
       "status": "500"
@@ -110,8 +103,7 @@ test('with flex params in fixture but invalid substitutions', function(assert) {
   let validator = new ApiValidator({ fixture });
 
   validator.verifyRequest({
-    requestBody,
-    flexParams: ['fred.flintstone'],
+    flexParams: {'flintstone-id': ''},
     callback: ({ expectedBody }) => {
       assert.deepEqual(
         expectedBody,
@@ -123,7 +115,7 @@ test('with flex params in fixture but invalid substitutions', function(assert) {
 
   assert.equal(validator.buildResponseStatus(), '500', 'buildResponseStatus returns correct value');
   assert.deepEqual(
-    validator.buildResponseBody({ flexParams: { "hello.world": "" } }),
+    validator.buildResponseBody({ flexParams: { "world-id": "" } }),
     fixture.response.body,
     'buildResponseBody returns correct value'
   );
@@ -197,7 +189,7 @@ test('with links', function(assert) {
   let validator = new ApiValidator({ fixture });
 
   assert.deepEqual(
-    validator.buildResponseBody({ flexParams: { "hello.world": "" } }),
+    validator.buildResponseBody({ flexParams: {} }),
     expectedBody,
     'buildResponseBody returns correct value'
   );

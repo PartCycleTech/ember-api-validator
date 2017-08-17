@@ -4,6 +4,10 @@ function isValidId(value) {
   return !_.isEmpty(value);
 }
 
+function paramAsId(param) {
+  return `"id#${param}"`;
+}
+
 function removeLinksFromRelationships(record) {
   let relationships = _.get(record, "relationships") || {};
   _.keys(relationships).forEach((key) => {
@@ -28,17 +32,19 @@ function removeLinks(response) {
   });
 }
 
-function verifyRequest({ requestBody, flexParams, callback } = {}) {
-  flexParams = flexParams || [];
+function replaceFlexParam({json, param, value} = {}) {
+  let stringified = JSON.stringify(json);
+  if (_.includes(stringified, paramAsId(param)) && isValidId(value)) {
+    stringified = stringified.replace(paramAsId(param), `"${value}"`);
+  }
+  return JSON.parse(stringified);
+}
+
+function verifyRequest({ flexParams, callback } = {}) {
+  flexParams = flexParams || {};
   let expectedBody = _.cloneDeep(this.spec.request.body);
-  flexParams.forEach((path) => {
-    let expectedValue = _.get(expectedBody, path);
-    let actualValue = _.get(requestBody, path);
-    if (expectedValue === '@id') {
-      if (isValidId(actualValue)) {
-        _.set(expectedBody, path, actualValue);
-      }
-    }
+  _.keys(flexParams).forEach((param) => {
+    expectedBody = replaceFlexParam({json: expectedBody, param, value: flexParams[param]});
   });
   callback({ expectedBody });
 }
@@ -46,14 +52,8 @@ function verifyRequest({ requestBody, flexParams, callback } = {}) {
 function buildResponseBody({ flexParams } = {}) {
   flexParams = flexParams || {};
   let response = _.cloneDeep(this.spec.response.body);
-  _.keys(flexParams).forEach((path) => {
-    let responseValue = _.get(response, path);
-    let customValue = flexParams[path];
-    if (responseValue === '@id') {
-      if (isValidId(customValue)) {
-        _.set(response, path, customValue);
-      }
-    }
+  _.keys(flexParams).forEach((param) => {
+    response = replaceFlexParam({json: response, param, value: flexParams[param]});
   });
   removeLinks(response);
   return response;
