@@ -32,29 +32,28 @@ function removeLinks(response) {
   });
 }
 
-function replaceFlexParam({json, param, value} = {}) {
+function replaceFlexParams({json, flexParams} = {}) {
   let stringified = JSON.stringify(json);
-  if (_.includes(stringified, paramAsId(param)) && isValidId(value)) {
-    stringified = stringified.replace(paramAsId(param), `"${value}"`);
-  }
+  _.keys(flexParams).forEach((param) => {
+    let value = flexParams[param];
+    if (_.includes(stringified, paramAsId(param)) && isValidId(value)) {
+      stringified = stringified.replace(paramAsId(param), `"${value}"`);
+    }
+  });
   return JSON.parse(stringified);
 }
 
 function verifyRequest({ flexParams, callback } = {}) {
   flexParams = flexParams || {};
   let expectedBody = _.cloneDeep(this.spec.request.body);
-  _.keys(flexParams).forEach((param) => {
-    expectedBody = replaceFlexParam({json: expectedBody, param, value: flexParams[param]});
-  });
+  expectedBody = replaceFlexParams({json: expectedBody, flexParams});
   callback({ expectedBody });
 }
 
 function buildResponseBody({ flexParams } = {}) {
   flexParams = flexParams || {};
   let response = _.cloneDeep(this.spec.response.body);
-  _.keys(flexParams).forEach((param) => {
-    response = replaceFlexParam({json: response, param, value: flexParams[param]});
-  });
+  response = replaceFlexParams({json: response, flexParams});
   removeLinks(response);
   return response;
 }
