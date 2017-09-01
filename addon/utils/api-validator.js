@@ -8,6 +8,10 @@ function paramAsId(param) {
   return `"id#${param}"`;
 }
 
+function paramAsAny(param) {
+  return `"any#${param}"`;
+}
+
 function removeLinksFromRelationships(record) {
   let relationships = _.get(record, "relationships") || {};
   _.keys(relationships).forEach((key) => {
@@ -38,6 +42,9 @@ function replaceFlexParams({json, flexParams} = {}) {
     let value = flexParams[param];
     if (_.includes(stringified, paramAsId(param)) && isValidId(value)) {
       stringified = stringified.replace(paramAsId(param), `"${value}"`);
+    }
+    if (_.includes(stringified, paramAsAny(param))) {
+      stringified = stringified.replace(paramAsAny(param), `"${value}"`);
     }
   });
   return JSON.parse(stringified);
