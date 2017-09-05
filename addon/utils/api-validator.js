@@ -12,6 +12,10 @@ function paramAsAny(param) {
   return `"any#${param}"`;
 }
 
+function replacementForId(value) {
+  return _.isNumber(value) ? value : `"${value}"`;
+}
+
 function removeLinksFromRelationships(record) {
   let relationships = _.get(record, "relationships") || {};
   _.keys(relationships).forEach((key) => {
@@ -41,7 +45,7 @@ function replaceFlexParams({json, flexParams} = {}) {
   _.keys(flexParams).forEach((param) => {
     let value = flexParams[param];
     if (_.includes(stringified, paramAsId(param)) && isValidId(value)) {
-      stringified = stringified.replace(paramAsId(param), `"${value}"`);
+      stringified = stringified.replace(paramAsId(param), replacementForId(value));
     }
     if (_.includes(stringified, paramAsAny(param))) {
       stringified = stringified.replace(paramAsAny(param), `"${value}"`);
