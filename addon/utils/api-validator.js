@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 function isValidId(value) {
-  return !_.isEmpty(value);
+  return Boolean(value);
 }
 
 function paramAsId(param) {
