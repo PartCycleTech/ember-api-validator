@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 function isValidId(value) {
-  return !_.isEmpty(value);
+  return Boolean(value);
 }
 
 function paramAsId(param) {
@@ -10,6 +10,10 @@ function paramAsId(param) {
 
 function paramAsAny(param) {
   return `"any#${param}"`;
+}
+
+function replacementForId(value) {
+  return _.isNumber(value) ? value : `"${value}"`;
 }
 
 function removeLinksFromRelationships(record) {
@@ -41,7 +45,7 @@ function replaceFlexParams({json, flexParams} = {}) {
   _.keys(flexParams).forEach((param) => {
     let value = flexParams[param];
     if (_.includes(stringified, paramAsId(param)) && isValidId(value)) {
-      stringified = stringified.replace(paramAsId(param), `"${value}"`);
+      stringified = stringified.replace(paramAsId(param), replacementForId(value));
     }
     if (_.includes(stringified, paramAsAny(param))) {
       stringified = stringified.replace(paramAsAny(param), `"${value}"`);
