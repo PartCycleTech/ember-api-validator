@@ -4,12 +4,20 @@ function isValidId(value) {
   return Boolean(value);
 }
 
+function isValidNumber(value) {
+  return _.isNumber(value);
+}
+
 function paramAsId(param) {
   return `"id#${param}"`;
 }
 
 function paramAsAny(param) {
   return `"any#${param}"`;
+}
+
+function paramAsNumber(param) {
+  return `"number#${param}"`;
 }
 
 function replacementForId(value) {
@@ -45,10 +53,13 @@ function replaceFlexParams({json, flexParams} = {}) {
   _.keys(flexParams).forEach((param) => {
     let value = flexParams[param];
     if (_.includes(stringified, paramAsId(param)) && isValidId(value)) {
-      stringified = stringified.replace(paramAsId(param), replacementForId(value));
+      stringified = stringified.split(paramAsId(param)).join(replacementForId(value));
     }
     if (_.includes(stringified, paramAsAny(param))) {
-      stringified = stringified.replace(paramAsAny(param), `"${value}"`);
+      stringified = stringified.split(paramAsAny(param)).join(`"${value}"`);
+    }
+    if (_.includes(stringified, paramAsNumber(param)) && isValidNumber(value)) {
+      stringified = stringified.split(paramAsNumber(param)).join(`${value}`);
     }
   });
   return JSON.parse(stringified);
