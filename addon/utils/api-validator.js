@@ -45,10 +45,10 @@ function replaceFlexParams({json, flexParams} = {}) {
   _.keys(flexParams).forEach((param) => {
     let value = flexParams[param];
     if (_.includes(stringified, paramAsId(param)) && isValidId(value)) {
-      stringified = stringified.replace(paramAsId(param), replacementForId(value));
+      stringified = stringified.split(paramAsId(param)).join(replacementForId(value));
     }
     if (_.includes(stringified, paramAsAny(param))) {
-      stringified = stringified.replace(paramAsAny(param), `"${value}"`);
+      stringified = stringified.split(paramAsAny(param)).join(`"${value}"`);
     }
   });
   return JSON.parse(stringified);
