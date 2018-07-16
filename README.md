@@ -2,7 +2,8 @@
 
 Ember addon for testing against [partcycle-api-fixtures](https://github.com/PartCycleTech/partcycle-api-fixtures)
 
-## Installation
+Installation
+------------------------------------------------------------------------------
 
 * Add `"api-validator": "PartCycleTech/ember-api-validator"` to your package.json
 * `npm install`
